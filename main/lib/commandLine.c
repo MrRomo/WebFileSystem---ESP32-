@@ -35,11 +35,6 @@ message_t argsParser(char *str)
       token = strtok(NULL, s);
    }
 
-   printf("Final agrs\n");
-   printf("REQ PARSER %s\n", msg.first_arg);
-   printf("REQ PARSER %d\n", msg.req);
-   printf("FILE PARSER %s\n", msg.file);
-   printf("TEXT PARSER %s\n", msg.text);
 
    return msg;
 }
@@ -76,10 +71,6 @@ void commandLine(char *req)
       msg.req = CFOLDER;
    }
 
-   printf("Switch agrs\n");
-   printf("REQ PARSER %s\n", msg.first_arg);
-   printf("REQ PARSER %d\n", msg.req);
-   printf("FILE PARSER %s\n", msg.file);
-   printf("TEXT PARSER %s\n", msg.text);
+
    xQueueSend(fileSystemReq, &msg, portMAX_DELAY);
 }

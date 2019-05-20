@@ -4,7 +4,6 @@
 void fileSystemManager(message_t *req)
 {
     printf("XQueue Received\n");
-
     printf("\n\nStart filesystem\n");
 
     struct dirent *entrada_directory;
@@ -19,7 +18,6 @@ void fileSystemManager(message_t *req)
     printf("REQ File System %d\n", req->req);
     printf("FILE File System %s\n", file);
     printf("TEXT File System %s\n", req->text);
-
     printf("virtual file system [OK]\r\n");
 
     // dr = opendir("/vsd");
@@ -84,12 +82,12 @@ void fileSystemManager(message_t *req)
 
         break;
     case DELETE:
-        printf("*Deleting file: %s*\n", req->file);
+        printf("*Deleting file: %s*\n", file);
 
-        int status = remove(req->file);
+        int status = remove(file);
 
         if (status == 0)
-            printf("%s file deleted successfully.\n", req->file);
+            printf("%s file deleted successfully.\n", file);
         else
         {
             printf("Unable to delete the file\n");
