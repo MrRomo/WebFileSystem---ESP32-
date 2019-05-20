@@ -1,34 +1,6 @@
 
 #include "Server.h"
-
-void commandLine(char *req)
-{
-	if (!strcmp(req, "ls\n"))
-	{
-		req = LIST;
-		printf("LIST files req \n");
-		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-	}
-	else if (!strcmp(req, "cat\n"))
-	{
-		req = CAT;
-		printf("cat files req \n");
-		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-	}
-	else if (!strcmp(req, "touch\n"))
-	{
-		req = CREATE;
-		printf("cat files req \n");
-		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-	}
-	else if (!strcmp(req, "rm\n"))
-	{
-		req = DELETE;
-		printf("cat files req \n");
-		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-	}
-}
-
+#include "commandLine.h"
 void server()
 {
 	int sock, sock_client, c;

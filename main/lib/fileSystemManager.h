@@ -1,5 +1,5 @@
-#ifndef _SERVER_
-#define _SERVER_
+#ifndef _FS_MANAGER_
+#define _FS_MANAGER_
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
@@ -11,8 +11,9 @@
 #include "nvs_flash.h"
 #include "esp_vfs.h"
 #include "esp_vfs_fat.h"
-
-void fileSystemManager();
 #include "fileSystemManager.c"
+
+void fileSystemManager(char req);
+
 
 #endif
