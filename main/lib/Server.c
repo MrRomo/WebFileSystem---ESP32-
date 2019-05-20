@@ -15,6 +15,18 @@ void commandLine(char *req)
 		printf("cat files req \n");
 		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
 	}
+	else if (!strcmp(req, "touch\n"))
+	{
+		req = CREATE;
+		printf("cat files req \n");
+		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
+	}
+	else if (!strcmp(req, "rm\n"))
+	{
+		req = DELETE;
+		printf("cat files req \n");
+		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
+	}
 }
 
 void server()

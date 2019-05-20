@@ -11,8 +11,8 @@ void fileSystemManager(char req)
     char buff[50] = {0};
 
     char *folder = "/vsd";
-    char *text = "texto de  prueba";
-    char *filename = "test.txt";
+    char *text = "texto de prueba para eliminar";
+    char *filename = "test2.txt";
 
     sprintf(direction, "%s/%s", folder, filename);
 
