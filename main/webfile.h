@@ -35,14 +35,15 @@ xQueueHandle fileSystemRes;
 #define CREATE 4
 #define EDIT 5
 #define DELETE 6
+#define CFOLDER 7
 
 typedef struct message
 {
-    char *req;
+    char req;
+    char *first_arg;
     char *res;
-    char *filename;
-    char *folder;
-    char *text;
+    char file[20];
+    char text[50];
 } message_t;
 
 #endif

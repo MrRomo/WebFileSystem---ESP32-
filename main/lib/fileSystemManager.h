@@ -13,7 +13,6 @@
 #include "esp_vfs_fat.h"
 #include "fileSystemManager.c"
 
-void fileSystemManager(char req);
-
+void fileSystemManager(message_t *req);
 
 #endif

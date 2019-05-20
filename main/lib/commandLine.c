@@ -8,52 +8,38 @@ message_t argsParser(char *str)
    char *token;
    char c = 0;
    message_t msg;
-   msg.req = "NULL";
-   msg.filename = "NULL";
-   msg.folder = "NULL";
-   msg.text = "NULL";
+   msg.req = 0;
+   msg.first_arg = "NULL";
    /* get the first token */
    token = strtok(str, s);
-   msg.req = token;
-
+   msg.first_arg = token;
    /* walk through other tokens */
    while (token != NULL)
-
    {
-      
+
       printf("C=%d %s\n", c, token);
       c++;
-      if (c == 3)
+      if ((c == 2) && (token != NULL))
       {
+         memset(msg.file, 0, sizeof(msg.file));
+         strcpy(msg.file,token);
+      }
+      if(c==3){
          s = "\"";
-      }
-      if (c == 4)
+      }  
+      if ((c == 4) && (token != NULL))
       {
-         msg.text = token;
-      }
-      if (c == 2)
-      {
-         msg.folder = token;
+         memset(msg.text, 0, sizeof(msg.text));
+         strcpy(msg.text,token);
       }
       token = strtok(NULL, s);
    }
-   printf("FOLDER: %s\n", msg.folder);
-   if (c > 1)
-   {
-      s = "/";
-      c = 0;
-      char temp [50] = {0};
-      strcpy(temp, msg.folder);  
-      printf("FOLDER TEMP : %s\n", temp);
-      token = strtok(temp, s);
-      while (token != NULL)
-      {
-         printf("C=%d %s\n", c, token);
-         strcpy(&msg.filename,token);  
-         c++;
-         token = strtok(NULL, s);
-      }
-   }
+
+   printf("Final agrs\n");
+   printf("REQ PARSER %s\n", msg.first_arg);
+   printf("REQ PARSER %d\n", msg.req);
+   printf("FILE PARSER %s\n", msg.file);
+   printf("TEXT PARSER %s\n", msg.text);
 
    return msg;
 }
@@ -61,32 +47,39 @@ void commandLine(char *req)
 {
    message_t msg;
    msg = argsParser(req);
-   printf("REQ PARSER %s\n", msg.req);
-   printf("FOLDER PARSER %s\n", msg.folder);
+   if ((!strcmp(msg.first_arg, "ls\n")) || (!strcmp(msg.first_arg, "ls")))
+   {
+      msg.req = LIST;
+   }
+   else if (!strcmp(msg.first_arg, "cat"))
+   {
+      msg.req = CAT;
+   }
+   else if (!strcmp(msg.first_arg, "touch"))
+   {
+      msg.req = CREATE;
+   }
+   else if (!strcmp(msg.first_arg, "rm"))
+   {
+      msg.req = DELETE;
+   }
+   else if (!strcmp(msg.first_arg, "nano"))
+   {
+      msg.req = EDIT;
+   }
+   else if (!strcmp(msg.first_arg, "cd"))
+   {
+      msg.req = FOLDER;
+   }
+   else if (!strcmp(msg.first_arg, "mkdir"))
+   {
+      msg.req = CFOLDER;
+   }
+
+   printf("Switch agrs\n");
+   printf("REQ PARSER %s\n", msg.first_arg);
+   printf("REQ PARSER %d\n", msg.req);
+   printf("FILE PARSER %s\n", msg.file);
    printf("TEXT PARSER %s\n", msg.text);
-   printf("FILENAME PARSER %s\n", msg.filename);
-   // if (!strcmp(req, "ls\n"))
-   // {
-   //    req = LIST;
-   //    printf("LIST files req \n");
-   //    xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-   // }
-   // else if (!strcmp(req, "cat\n"))
-   // {
-   //    req = CAT;
-   //    printf("cat files req \n");
-   //    xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-   // }
-   // else if (!strcmp(req, "touch\n"))
-   // {
-   //    req = CREATE;
-   //    printf("cat files req \n");
-   //    xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-   // }
-   // else if (!strcmp(req, "rm\n"))
-   // {
-   //    req = DELETE;
-   //    printf("cat files req \n");
-   //    xQueueSend(fileSystemReq, &req, portMAX_DELAY);
-   // }
+   xQueueSend(fileSystemReq, &msg, portMAX_DELAY);
 }

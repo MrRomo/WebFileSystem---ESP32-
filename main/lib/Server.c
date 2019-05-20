@@ -45,7 +45,7 @@ void server()
 				{
 					printf("Buffer %s\n", buffer);
 					commandLine(buffer);
-					
+					memset(buffer, 0, sizeof(buffer));
 				}
 				send(sock_client, (const void *)buffer, sizeof(buffer),0);
 				printf("Cliente desconectado\n");

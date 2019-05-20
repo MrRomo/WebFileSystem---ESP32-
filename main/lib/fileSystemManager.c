@@ -1,29 +1,33 @@
 
 #include "fileSystemManager.h"
 
-void fileSystemManager(char req)
+void fileSystemManager(message_t *req)
 {
+    printf("XQueue Received\n");
+
     printf("\n\nStart filesystem\n");
+
     struct dirent *entrada_directory;
     DIR *dr = NULL;
     FILE *archivo = NULL;
-    char direction[80] = {0};
     char buff[50] = {0};
-
     char *folder = "/vsd";
-    char *text = "texto de prueba para eliminar";
-    char *filename = "test2.txt";
+    char file [25];
+    sprintf(file, "%s/%s",folder,req->file);
+    
 
-    sprintf(direction, "%s/%s", folder, filename);
+    printf("REQ File System %d\n", req->req);
+    printf("FILE File System %s\n", file);
+    printf("TEXT File System %s\n", req->text);
 
     printf("virtual file system [OK]\r\n");
-    dr = opendir("/vsd");
 
-    printf("XQueue Received");
+    // dr = opendir("/vsd");
 
-    switch (req)
+    switch ((int)req->req)
     {
     case LIST:
+
         printf("*Listing files in folder: %s*\n", folder);
         dr = opendir(folder);
         if (dr == NULL)
@@ -41,10 +45,10 @@ void fileSystemManager(char req)
 
         break;
     case CAT:
-        printf("*Open file: %s*\n", filename);
+        printf("*Open file: %s*\n", file);
 
         dr = opendir(folder);
-        archivo = fopen(direction, "r");
+        archivo = fopen(file, "r");
         if (archivo != NULL)
         {
             fgets(buff, sizeof(buff), archivo);
@@ -62,26 +66,30 @@ void fileSystemManager(char req)
         break;
 
     case CREATE:
-        printf("*Creating file: %s*\n", filename);
+        printf("*Creating file: %s*\n", file);
         dr = opendir(folder);
-        archivo = fopen(direction, "w");
+        archivo = fopen(file, "w");
         if (archivo != NULL)
         {
             //Escribir Archivo
-            fprintf(archivo, text);
+            fprintf(archivo, req->text);
+        }else
+        {
+            printf("ERROR CREATING FILE");
         }
+        
 
         break;
     case EDIT:
 
         break;
     case DELETE:
-        printf("*Deleting file: %s*\n", direction);
+        printf("*Deleting file: %s*\n", req->file);
 
-        int status = remove(direction);
+        int status = remove(req->file);
 
         if (status == 0)
-            printf("%s file deleted successfully.\n", filename);
+            printf("%s file deleted successfully.\n", req->file);
         else
         {
             printf("Unable to delete the file\n");
@@ -90,6 +98,7 @@ void fileSystemManager(char req)
         break;
 
     default:
+        printf("req not found");
         break;
     }
     fclose(archivo);

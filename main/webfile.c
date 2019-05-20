@@ -21,12 +21,14 @@ void fileSystemTask()
             printf("Partition OK\n");
             while (1)
             {
-                char req;
-                xQueueReceive(fileSystemReq, &req, portMAX_DELAY);    
-                printf("Req received %d", req);
-                fileSystemManager(req);
+                message_t *fileReq;
+                fileReq = malloc(sizeof(message_t));
+                xQueueReceive(fileSystemReq, fileReq, portMAX_DELAY);
+                printf("Req received %d - %s - %s\n", fileReq->req, fileReq->file, fileReq->text);
+                fileSystemManager(fileReq);
+                free(fileReq);
+                
             }
-            
         }
         else
         {
@@ -43,9 +45,10 @@ void app_main()
 {
 
     //Inicialización NVS (Non Volatile Storage)
+
     ESP_ERROR_CHECK(nvs_flash_init());
-    fileSystemReq = xQueueCreate(2, sizeof(char));
-    fileSystemRes = xQueueCreate(2, sizeof(char)*10);
+    fileSystemReq = xQueueCreate(2, sizeof(message_t));
+    fileSystemRes = xQueueCreate(2, sizeof(char) * 10);
 
     AP_init(); //Init AP Manager
     printf("AP Started\n");
