@@ -1,6 +1,21 @@
 
 #include "Server.h"
 
+void commandLine(char *req)
+{
+	if (!strcmp(req, "ls\n"))
+	{
+		req = LIST;
+		printf("LIST files req \n");
+		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
+	}
+	else if (!strcmp(req, "cat\n"))
+	{
+		req = CAT;
+		printf("cat files req \n");
+		xQueueSend(fileSystemReq, &req, portMAX_DELAY);
+	}
+}
 
 void server()
 {
@@ -45,9 +60,10 @@ void server()
 				while (recv(sock_client, buffer, sizeof(buffer), 0))
 				{
 					printf("Buffer %s\n", buffer);
-				
+					commandLine(buffer);
+					
 				}
-
+				send(sock_client, (const void *)buffer, sizeof(buffer),0);
 				printf("Cliente desconectado\n");
 				close(sock_client);
 			}
