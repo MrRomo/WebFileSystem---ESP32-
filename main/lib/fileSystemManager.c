@@ -11,7 +11,7 @@ void fileSystemManager(message_t *req)
     FILE *archivo = NULL;
     char buff[100] = {0};
     // char *root = ;
-    char * folder = req->folder;
+    char *folder = req->folder;
     char file[25];
     // sprintf(folder, "%s/%s", root, req->folder);
     sprintf(file, "%s/%s", folder, req->file);
@@ -80,6 +80,28 @@ void fileSystemManager(message_t *req)
         else
         {
             printf("ERROR CREATING FILE");
+        }
+
+        break;
+    case CFOLDER:
+        printf("*Creating a folder: %s - %s*\n", req->file, file);
+
+        struct stat st = {0};
+
+        if (stat(file, &st) == -1)
+        {
+            if (mkdir(file, 0700))
+            {
+                printf("folder created¡¡");
+            }
+            else
+            {
+                printf("ERROR folder not created¡¡");
+            }
+        }
+        else
+        {
+            printf("folder %s exist already", req->file);
         }
 
         break;
