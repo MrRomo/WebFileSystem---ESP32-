@@ -24,9 +24,8 @@ void fileSystemManager(message_t *req)
     switch ((int)req->req)
     {
     case LIST:
-        sprintf(folder,"/%s",req->file);
 
-        dr = opendir(folder);
+        dr = opendir(req->folder);
         if (dr == NULL)
         {
             char *error = "no se encontró el directorio\r\n";

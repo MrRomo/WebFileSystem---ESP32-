@@ -8,7 +8,7 @@ message_t argsParser(char *str)
    char *token;
    char c = 0;
    message_t msg;
-   vector_t * folderVector = NULL;
+   vector_t *folderVector = NULL;
 
    msg.req = 0;
    msg.first_arg = "NULL";
@@ -36,38 +36,48 @@ message_t argsParser(char *str)
       }
       token = strtok(NULL, s);
    }
-   s = "/";
-   c = 0;
-   char len = strlen(msg.file);
-   char file[len];
-   strcpy(file, msg.file);
-   token = strtok(file, s);
-   while (token != NULL)
+   if (c)
    {
-      c++;
-      token = strtok(NULL, s);
-   }
-   strcpy(file, msg.file);
-   token = strtok(file, s);
-   folderVector = vector_new(c);
-   c = 0;
-   while (token != NULL)
-   {
-      vector_insert(folderVector, c, token);
-      c++;
-      token = strtok(NULL, s);
-   }
-   memset(msg.file, 0, sizeof(msg.file));
-   memset(msg.folder, 0, sizeof(msg.folder));
-   strcpy(msg.file, (char *)vector_get(folderVector, folderVector->tam - 1));
-   if (folderVector->tam > 1)
-   {
-      for (size_t i = 0; i < folderVector->tam - 1; i++)
+
+      s = "/";
+      c = 0;
+      char len = strlen(msg.file);
+      char file[len];
+      strcpy(file, msg.file);
+      token = strtok(file, s);
+      while (token != NULL)
       {
-         sprintf(msg.folder, "%s/%s", msg.folder, (char *)vector_get(folderVector, i));
+         c++;
+         token = strtok(NULL, s);
       }
+      strcpy(file, msg.file);
+      token = strtok(file, s);
+      folderVector = vector_new(c);
+      c = 0;
+      while (token != NULL)
+      {
+         vector_insert(folderVector, c, token);
+         c++;
+         token = strtok(NULL, s);
+      }
+      char tempfolder[20] = {0};
+      memset(msg.file, 0, sizeof(msg.file));
+      memset(msg.folder, 0, sizeof(msg.folder));
+      strcpy(msg.file, (char *)vector_get(folderVector, folderVector->tam - 1));
+
+      char tam = 1;
+      if (c == 1)
+         tam = 0;
+      for (size_t i = 0; i < folderVector->tam - tam; i++)
+      {
+         sprintf(tempfolder, "%s/%s", tempfolder, (char *)vector_get(folderVector, i));
+      }
+      memcpy(msg.folder, tempfolder, strlen(tempfolder)-(!tam));
+
+      vector_destroy(folderVector);
+      printf("FOLDER %s\n", msg.folder);
+      printf("File %s\n", msg.file);
    }
-   vector_destroy(folderVector);
    return msg;
 }
 void commandLine(char *req)
