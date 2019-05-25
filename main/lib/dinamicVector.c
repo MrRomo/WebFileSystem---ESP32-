@@ -1,8 +1,6 @@
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include "dinamicVector.h"
+#include "freertos/FreeRTOS.h"
 
 vector_t *vector_new(size_t tam_inicial)
 {
@@ -57,15 +55,21 @@ bool vector_resize(vector_t *vector, size_t tam)
     if (tam < vector->tam)
         return false;
 
+    printf("PAss 1?\n");
+
     //copia los datos del vector a un void** al tamaño pedido
     void **datos_nuevos = realloc(vector->dato, tam * sizeof(void *));
     if (datos_nuevos == NULL)
         return false;
 
-    free(vector->dato);          //libera los datos del viejo vector
+    printf("PAss 2?\n");
+    free(vector->dato); //libera los datos del viejo vector
+    printf("PAss 3?\n");
     vector->dato = datos_nuevos; // asigna el nuevo void** al vector dinamico
-    vector->tam = tam;           // nuevo tamaño asignado
-    return vector;
+    printf("PAss 4?\n");
+    vector->tam = tam; // nuevo tamaño asignado
+    printf("PAss 5?\n");
+    return true;
 }
 
 //destruye el vector de la memoria

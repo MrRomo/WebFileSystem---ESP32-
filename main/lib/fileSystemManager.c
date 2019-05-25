@@ -11,11 +11,12 @@ void fileSystemManager(message_t *req)
     FILE *archivo = NULL;
     char buff[100] = {0};
     // char *root = ;
-    char * folder = "/vsd";
+    char * folder = req->folder;
     char file[25];
     // sprintf(folder, "%s/%s", root, req->folder);
     sprintf(file, "%s/%s", folder, req->file);
     printf("REQ File System %d\n", req->req);
+    printf("REQ Folder System %s\n", req->folder);
     printf("FILE File System %s\n", file);
     printf("TEXT File System %s\n", req->text);
     printf("virtual file system [OK]\r\n");
@@ -23,6 +24,7 @@ void fileSystemManager(message_t *req)
     switch ((int)req->req)
     {
     case LIST:
+        sprintf(folder,"/%s",req->file);
 
         dr = opendir(folder);
         if (dr == NULL)

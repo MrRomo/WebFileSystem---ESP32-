@@ -8,6 +8,8 @@ message_t argsParser(char *str)
    char *token;
    char c = 0;
    message_t msg;
+   vector_t * folderVector = NULL;
+
    msg.req = 0;
    msg.first_arg = "NULL";
    /* get the first token */
@@ -34,7 +36,38 @@ message_t argsParser(char *str)
       }
       token = strtok(NULL, s);
    }
-
+   s = "/";
+   c = 0;
+   char len = strlen(msg.file);
+   char file[len];
+   strcpy(file, msg.file);
+   token = strtok(file, s);
+   while (token != NULL)
+   {
+      c++;
+      token = strtok(NULL, s);
+   }
+   strcpy(file, msg.file);
+   token = strtok(file, s);
+   folderVector = vector_new(c);
+   c = 0;
+   while (token != NULL)
+   {
+      vector_insert(folderVector, c, token);
+      c++;
+      token = strtok(NULL, s);
+   }
+   memset(msg.file, 0, sizeof(msg.file));
+   memset(msg.folder, 0, sizeof(msg.folder));
+   strcpy(msg.file, (char *)vector_get(folderVector, folderVector->tam - 1));
+   if (folderVector->tam > 1)
+   {
+      for (size_t i = 0; i < folderVector->tam - 1; i++)
+      {
+         sprintf(msg.folder, "%s/%s", msg.folder, (char *)vector_get(folderVector, i));
+      }
+   }
+   vector_destroy(folderVector);
    return msg;
 }
 void commandLine(char *req)
