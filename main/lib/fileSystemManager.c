@@ -9,38 +9,46 @@ void fileSystemManager(message_t *req)
     struct dirent *entrada_directory;
     DIR *dr = NULL;
     FILE *archivo = NULL;
-    char buff[50] = {0};
-    char *folder = "/vsd";
-    char file [25];
-    sprintf(file, "%s/%s",folder,req->file);
-    
-
+    char buff[100] = {0};
+    // char *root = ;
+    char * folder = "/vsd";
+    char file[25];
+    // sprintf(folder, "%s/%s", root, req->folder);
+    sprintf(file, "%s/%s", folder, req->file);
     printf("REQ File System %d\n", req->req);
     printf("FILE File System %s\n", file);
     printf("TEXT File System %s\n", req->text);
     printf("virtual file system [OK]\r\n");
 
-    // dr = opendir("/vsd");
-
     switch ((int)req->req)
     {
     case LIST:
 
-        printf("*Listing files in folder: %s*\n", folder);
         dr = opendir(folder);
         if (dr == NULL)
         {
-            printf("no se encontró el directorio\r\n");
+            char *error = "no se encontró el directorio\r\n";
+            printf("%s", error);
+            xQueueSend(fileSystemRes, &error, portMAX_DELAY);
+            break;
         }
         else
         {
+            char *header = "*Listing files in folder: ";
+            printf("%s %s*\n", header, folder);
+            strcpy(buff, header);
+            strcat(buff, "\n");
             while ((entrada_directory = readdir(dr)) != NULL)
             {
-                printf("%s\r\n", entrada_directory->d_name);
+                char *dir = entrada_directory->d_name;
+                strcat(buff, "--/");
+                strcat(buff, dir);
+                strcat(buff, "\n");
+                printf("%s\r\n", buff);
             }
+            printf("%s\r\n", buff);
             closedir(dr);
         }
-
         break;
     case CAT:
         printf("*Open file: %s*\n", file);
@@ -59,10 +67,6 @@ void fileSystemManager(message_t *req)
 
         break;
 
-    case FOLDER:
-
-        break;
-
     case CREATE:
         printf("*Creating file: %s*\n", file);
         dr = opendir(folder);
@@ -71,14 +75,11 @@ void fileSystemManager(message_t *req)
         {
             //Escribir Archivo
             fprintf(archivo, req->text);
-        }else
+        }
+        else
         {
             printf("ERROR CREATING FILE");
         }
-        
-
-        break;
-    case EDIT:
 
         break;
     case DELETE:

@@ -16,25 +16,24 @@ message_t argsParser(char *str)
    /* walk through other tokens */
    while (token != NULL)
    {
-
       printf("C=%d %s\n", c, token);
       c++;
-      if ((c == 2) && (token != NULL))
+      if (c == 2)
       {
          memset(msg.file, 0, sizeof(msg.file));
-         strcpy(msg.file,token);
+         strcpy(msg.file, token);
       }
-      if(c==3){
+      if (c == 3)
+      {
          s = "\"";
-      }  
+      }
       if ((c == 4) && (token != NULL))
       {
          memset(msg.text, 0, sizeof(msg.text));
-         strcpy(msg.text,token);
+         strcpy(msg.text, token);
       }
       token = strtok(NULL, s);
    }
-
 
    return msg;
 }
@@ -70,7 +69,6 @@ void commandLine(char *req)
    {
       msg.req = CFOLDER;
    }
-
 
    xQueueSend(fileSystemReq, &msg, portMAX_DELAY);
 }

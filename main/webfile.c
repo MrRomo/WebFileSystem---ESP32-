@@ -2,12 +2,12 @@
 #include "lib/AP_Manager.h"
 #include "lib/Server.h"
 #include "lib/fileSystemManager.h"
+#include "lib/dinamicVector.h"
 
 void serverTask()
 {
     server();
 }
-
 void fileSystemTask()
 {
     esp_vfs_fat_mount_config_t mount_config = {
@@ -21,13 +21,9 @@ void fileSystemTask()
             printf("Partition OK\n");
             while (1)
             {
-                message_t *fileReq;
-                fileReq = malloc(sizeof(message_t));
+                message_t *fileReq = malloc(sizeof(message_t));
                 xQueueReceive(fileSystemReq, fileReq, portMAX_DELAY);
-                printf("Req received %d - %s - %s\n", fileReq->req, fileReq->file, fileReq->text);
                 fileSystemManager(fileReq);
-                free(fileReq);
-                
             }
         }
         else
@@ -35,7 +31,13 @@ void fileSystemTask()
             while (1)
             {
                 printf("Mounting Partition ERROR \n");
-                vTaskDelay(1000 / portTICK_RATE_MS);
+                printf("Restarting on \n");
+                for (size_t i = 0; i < 3; i++)
+                {
+                    vTaskDelay(1000 / portTICK_RATE_MS);
+                    printf("%d... ", i);
+                }
+                esp_restart();
             }
         }
     }
@@ -48,7 +50,7 @@ void app_main()
 
     ESP_ERROR_CHECK(nvs_flash_init());
     fileSystemReq = xQueueCreate(2, sizeof(message_t));
-    fileSystemRes = xQueueCreate(2, sizeof(char) * 10);
+    fileSystemRes = xQueueCreate(2, sizeof(char) * 100);
 
     AP_init(); //Init AP Manager
     printf("AP Started\n");

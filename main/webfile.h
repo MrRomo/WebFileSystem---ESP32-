@@ -25,7 +25,9 @@
 #include "esp_event.h"
 
 static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
+
 xSemaphoreHandle client_connected;
+
 xQueueHandle fileSystemReq;
 xQueueHandle fileSystemRes;
 
@@ -43,6 +45,7 @@ typedef struct message
     char *first_arg;
     char *res;
     char file[20];
+    char folder[20];
     char text[50];
 } message_t;
 
